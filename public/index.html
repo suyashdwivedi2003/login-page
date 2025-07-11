@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Search App</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding-top: 100px; }
+    input[type="text"] { padding: 10px; width: 300px; }
+  </style>
+</head>
+<body>
+
+  <h2>🔍 Search Something</h2>
+  <input type="text" id="searchBar" placeholder="Search here..." readonly />
+  <div id="message" style="display:none; color:red; margin-top:20px;"></div>
+
+  <script>
+    // Helper to get URL params
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    const searchBar = document.getElementById("searchBar");
+    const verified = getQueryParam("verified");
+    if (verified === "1") {
+      searchBar.removeAttribute("readonly");
+      document.getElementById("message").style.display = "none";
+      searchBar.placeholder = "Type and press Enter to search Google...";
+      searchBar.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const query = searchBar.value.trim();
+          if (query) {
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, "_blank");
+          }
+        }
+      });
+    } else {
+      searchBar.addEventListener("click", () => {
+        const proceed = confirm("You need to log in first.");
+        if (proceed) {
+          window.location.href = "/login.html";
+        } else {
+          searchBar.style.display = "none";
+          const msg = document.getElementById("message");
+          msg.textContent = "You can't use the search bar.";
+          msg.style.display = "block";
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
